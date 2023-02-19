@@ -1,12 +1,10 @@
 package hexlet.code.model;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -17,36 +15,45 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
+    @NotBlank(message = "First name should not be empty")
+    @Size(min = 2, message = "First name should be greater than 1")
     @Column(name = "firstName")
-    String firstName;
+    private String firstName;
 
+    @NotBlank(message = "Last name should not be empty")
+    @Size(min = 2, message = "Last name should be greater than 1")
     @Column(name = "lastName")
-    String lastName;
+    private String lastName;
 
+    @NotBlank(message = "Email should not be empty")
+    @Email(message = "Email should be valid")
     @Column(name = "email")
-    String email;
+    private String email;
 
+    @NotBlank(message = "Password should not be empty")
+    @Size(min = 4, message = "Password should be greater than 3")
     @Column(name = "password")
-    String password;
+    private String password;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt")
-    Date createdAt;
+    private Date createdAt;
 }

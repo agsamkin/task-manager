@@ -5,12 +5,12 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
 
-    <changeSet author="a.samkin (generated)" id="1676804667082-1">
+    <changeSet author="a.samkin (generated)" id="1676876426488-1">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="usersPK"/>
             </column>
-            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_at" type="TIMESTAMP"/>
             <column name="email" type="VARCHAR(255)"/>
             <column name="first_name" type="VARCHAR(255)"/>
             <column name="last_name" type="VARCHAR(255)"/>

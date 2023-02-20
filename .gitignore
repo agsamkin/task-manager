@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 /taskManager.mv.db
+/taskManager.trace.db

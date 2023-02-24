@@ -4,8 +4,7 @@ import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
 import hexlet.code.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,12 @@ import java.util.List;
 @RequestMapping("${base-url}/users")
 public class UserController {
 
+    public static final String USER_CONTROLLER_PATH = "/users";
     private final UserService userService;
+
+    private static final String ONLY_OWNER_BY_ID = """
+            @userRepository.findById(#id).getEmail() == authentication.getName()
+        """;
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable("id") long id) {
@@ -37,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult bindingResult) {
+    public UserDto createUser(@RequestBody @Valid User user, BindingResult bindingResult) {
 //        if (bindingResult.hasErrors()) {
 //            Map<String, String> mapErrors = new HashMap<>();
 //            for (FieldError error : bindingResult.getFieldErrors()) {
@@ -45,11 +49,12 @@ public class UserController {
 //            }
 //            return new ResponseEntity<>(mapErrors, HttpStatus.BAD_REQUEST);
 //        }
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+        return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id,
+    @PreAuthorize(ONLY_OWNER_BY_ID)
+    public UserDto updateUser(@PathVariable("id") long id,
                               @RequestBody @Valid User user, BindingResult bindingResult) {
 //        if (bindingResult.hasErrors()) {
 //            Map<String, String> mapErrors = new HashMap<>();
@@ -58,10 +63,11 @@ public class UserController {
 //            }
 //            return new ResponseEntity<>(mapErrors, HttpStatus.BAD_REQUEST);
 //        }
-        return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
+        return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(ONLY_OWNER_BY_ID)
     public void deleteUser(@PathVariable("id") long id) {
         userService.deleteUser(id);
     }

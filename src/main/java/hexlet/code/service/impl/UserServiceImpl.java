@@ -6,17 +6,26 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static hexlet.code.config.security.WebSecurityConfig.DEFAULT_AUTHORITIES;
 
 @RequiredArgsConstructor
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     private UserDto convertToUserDto(User user) {
         return modelMapper.map(user, UserDto.class);
@@ -42,7 +51,7 @@ public class UserServiceImpl implements UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .password(user.getPassword()).build();
+                .password(passwordEncoder.encode(user.getPassword())).build();
         return convertToUserDto(userRepository.save(newUser));
     }
 
@@ -52,7 +61,7 @@ public class UserServiceImpl implements UserService {
         updateUser.setFirstName(user.getFirstName());
         updateUser.setLastName(user.getLastName());
         updateUser.setEmail(user.getEmail());
-        updateUser.setPassword(user.getPassword());
+        updateUser.setPassword(passwordEncoder.encode(user.getPassword()));
         return convertToUserDto(userRepository.save(updateUser));
     }
 
@@ -61,4 +70,28 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id);
         userRepository.delete(user);
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userByEmail = userRepository.findByEmail(username);
+        if (userByEmail.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return new org.springframework.security.core.userdetails.User(
+                userByEmail.get().getEmail(),
+                userByEmail.get().getPassword(),
+                DEFAULT_AUTHORITIES
+        );
+    }
+
+    @Override
+    public String getCurrentUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @Override
+    public User getCurrentUser() {
+        return userRepository.findByEmail(getCurrentUserName()).get();
+    }
+
 }

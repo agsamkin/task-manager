@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${base-url}/users")
+@RequestMapping("${base-url}" + USER_CONTROLLER_PATH)
 public class UserController {
-
     public static final String USER_CONTROLLER_PATH = "/users";
     private final UserService userService;
 
@@ -31,7 +32,7 @@ public class UserController {
         """;
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable("id") long id) {
+    public UserDto getById(@PathVariable("id") long id) {
         return userService.getUserById(id);
     }
 
@@ -41,34 +42,20 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto createUser(@RequestBody @Valid User user, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            Map<String, String> mapErrors = new HashMap<>();
-//            for (FieldError error : bindingResult.getFieldErrors()) {
-//                mapErrors.put(error.getField(), error.getDefaultMessage());
-//            }
-//            return new ResponseEntity<>(mapErrors, HttpStatus.BAD_REQUEST);
-//        }
+    public UserDto create(@RequestBody @Valid User user, BindingResult bindingResult) {
         return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public UserDto updateUser(@PathVariable("id") long id,
+    public UserDto update(@PathVariable("id") long id,
                               @RequestBody @Valid User user, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            Map<String, String> mapErrors = new HashMap<>();
-//            for (FieldError error : bindingResult.getFieldErrors()) {
-//                mapErrors.put(error.getField(), error.getDefaultMessage());
-//            }
-//            return new ResponseEntity<>(mapErrors, HttpStatus.BAD_REQUEST);
-//        }
         return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public void deleteUser(@PathVariable("id") long id) {
+    public void delete(@PathVariable("id") long id) {
         userService.deleteUser(id);
     }
 }

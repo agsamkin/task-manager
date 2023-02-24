@@ -35,14 +35,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<UserDto> getAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map(u -> convertToUserDto(u))
+                .map(this::convertToUserDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto getUserById(long id) {
-        User user = userRepository.findById(id);
-        return convertToUserDto(user);
+        return userRepository.findById(id)
+                .map(this::convertToUserDto)
+                .orElseThrow();
     }
 
     @Override
@@ -57,29 +58,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDto updateUser(long id, User user) {
-        User updateUser = userRepository.findById(id);
-        updateUser.setFirstName(user.getFirstName());
-        updateUser.setLastName(user.getLastName());
-        updateUser.setEmail(user.getEmail());
-        updateUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        return convertToUserDto(userRepository.save(updateUser));
+        return userRepository.findById(id)
+                .map(u -> {
+                    u.setFirstName(user.getFirstName());
+                    u.setLastName(user.getLastName());
+                    u.setEmail(user.getEmail());
+                    u.setPassword(passwordEncoder.encode(user.getPassword()));
+                    return userRepository.save(u);
+                }).map(this::convertToUserDto)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
     public void deleteUser(long id) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         userRepository.delete(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userByEmail = userRepository.findByEmail(username);
-        if (userByEmail.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         return new org.springframework.security.core.userdetails.User(
-                userByEmail.get().getEmail(),
-                userByEmail.get().getPassword(),
+                user.getEmail(),
+                user.getPassword(),
                 DEFAULT_AUTHORITIES
         );
     }

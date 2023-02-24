@@ -1,14 +1,11 @@
 package hexlet.code.service.impl;
 
 import hexlet.code.dto.TaskStatusDto;
-import hexlet.code.dto.UserDto;
 import hexlet.code.model.TaskStatus;
-import hexlet.code.model.User;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.service.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

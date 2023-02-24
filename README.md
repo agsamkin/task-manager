@@ -7,6 +7,5 @@
 [![my-workflow](https://github.com/agsamkin/java-project-73/actions/workflows/my-workflow.yml/badge.svg)](https://github.com/agsamkin/java-project-73/actions/workflows/my-workflow.yml)
 
 ### Codeclimate:
-
 [![Maintainability](https://api.codeclimate.com/v1/badges/e237b26278552394f9aa/maintainability)](https://codeclimate.com/github/agsamkin/java-project-73/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e237b26278552394f9aa/test_coverage)](https://codeclimate.com/github/agsamkin/java-project-73/test_coverage)

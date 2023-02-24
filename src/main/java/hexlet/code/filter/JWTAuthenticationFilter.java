@@ -62,9 +62,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             final Authentication authResult) throws IOException {
         final UserDetails user = (UserDetails) authResult.getPrincipal();
         final String token = jwtHelper.expiring(Map.of(SPRING_SECURITY_FORM_USERNAME_KEY, user.getUsername()));
-
-        response.getWriter().println(
-                objectMapper.writeValueAsString(Map.of("token", token))
-        );
+        response.getWriter().println(token);
     }
 }

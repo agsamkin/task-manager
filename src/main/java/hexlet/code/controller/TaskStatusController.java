@@ -1,6 +1,7 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.TaskStatusDto;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.service.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -27,22 +28,22 @@ public class TaskStatusController {
     private final TaskStatusService taskStatusService;
 
     @GetMapping("/{id}")
-    public TaskStatusDto getById(@PathVariable("id") long id) {
+    public TaskStatus getById(@PathVariable("id") long id) {
        return taskStatusService.getTaskStatusById(id);
     }
 
     @GetMapping
-    public List<TaskStatusDto> getAll() {
+    public List<TaskStatus> getAll() {
         return taskStatusService.getAllTaskStatuses();
     }
 
     @PostMapping
-    public TaskStatusDto create(@RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
+    public TaskStatus create(@RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
         return taskStatusService.createTaskStatus(taskStatusDto);
     }
 
     @PutMapping("/{id}")
-    public TaskStatusDto update(@PathVariable("id") long id,
+    public TaskStatus update(@PathVariable("id") long id,
                               @RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
         return taskStatusService.updateTaskStatus(id, taskStatusDto);
     }

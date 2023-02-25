@@ -5,7 +5,30 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
 
-    <changeSet author="a.samkin (generated)" id="1677163560799-1">
+
+    <changeSet author="a.samkin (generated)" id="1677347644549-1">
+        <createTable tableName="task">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="taskPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="executor_id" type="BIGINT"/>
+            <column name="task_status_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a.samkin (generated)" id="1677347644549-2">
+        <createTable tableName="task_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="task_statusPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a.samkin (generated)" id="1677347644549-3">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="usersPK"/>
@@ -17,16 +40,19 @@
             <column name="password" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="a.samkin (generated)" id="1677163560799-2">
+    <changeSet author="a.samkin (generated)" id="1677347644549-4">
+        <addUniqueConstraint columnNames="name" constraintName="UC_TASK_STATUSNAME_COL" tableName="task_status"/>
+    </changeSet>
+    <changeSet author="a.samkin (generated)" id="1677347644549-5">
         <addUniqueConstraint columnNames="email" constraintName="UC_USERSEMAIL_COL" tableName="users"/>
     </changeSet>
-    <changeSet author="a.samkin (generated)" id="1677267031585-1">
-        <createTable tableName="task_status">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="task_statusPK"/>
-            </column>
-            <column name="created_at" type="TIMESTAMP"/>
-            <column name="name" type="VARCHAR(255)"/>
-        </createTable>
+    <changeSet author="a.samkin (generated)" id="1677347644549-6">
+        <addForeignKeyConstraint baseColumnNames="task_status_id" baseTableName="task" constraintName="FK39t114vuu54mh3wqt50wc2vq4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="task_status" validate="true"/>
+    </changeSet>
+    <changeSet author="a.samkin (generated)" id="1677347644549-7">
+        <addForeignKeyConstraint baseColumnNames="executor_id" baseTableName="task" constraintName="FK60p5enwpfg7w3pnor96m0t931" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="a.samkin (generated)" id="1677347644549-8">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="task" constraintName="FKnu4tbtolc8avjgstax6sk0woe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
 </databaseChangeLog>

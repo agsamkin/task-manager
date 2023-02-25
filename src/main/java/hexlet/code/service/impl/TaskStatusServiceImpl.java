@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -24,34 +23,30 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     }
 
     @Override
-    public List<TaskStatusDto> getAllTaskStatuses() {
-        List<TaskStatus> taskStatuses = taskStatusRepository.findAll();
-        return taskStatuses.stream()
-                .map(this::convertToTaskStatusDto)
-                .collect(Collectors.toList());
+    public List<TaskStatus> getAllTaskStatuses() {
+        return taskStatusRepository.findAll();
     }
 
     @Override
-    public TaskStatusDto getTaskStatusById(long id) {
+    public TaskStatus getTaskStatusById(long id) {
         return taskStatusRepository.findById(id)
-                .map(this::convertToTaskStatusDto)
                 .orElseThrow(() -> new NoSuchElementException("Task status not found"));
     }
 
     @Override
-    public TaskStatusDto createTaskStatus(TaskStatusDto taskStatusDto) {
+    public TaskStatus createTaskStatus(TaskStatusDto taskStatusDto) {
         TaskStatus newTaskStatus = TaskStatus.builder()
                 .name(taskStatusDto.getName()).build();
-        return convertToTaskStatusDto(taskStatusRepository.save(newTaskStatus));
+        return taskStatusRepository.save(newTaskStatus);
     }
 
     @Override
-    public TaskStatusDto updateTaskStatus(long id, TaskStatusDto taskStatusDto) {
+    public TaskStatus updateTaskStatus(long id, TaskStatusDto taskStatusDto) {
         return taskStatusRepository.findById(id)
                 .map(ts -> {
                     ts.setName(taskStatusDto.getName());
                     return taskStatusRepository.save(ts);
-                }).map(this::convertToTaskStatusDto)
+                })
                 .orElseThrow(() -> new NoSuchElementException("Task status not found"));
     }
 

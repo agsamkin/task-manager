@@ -28,7 +28,7 @@ public class UserController {
     private final UserService userService;
 
     private static final String ONLY_OWNER_BY_ID = """
-            @userRepository.findById(#id).getEmail() == authentication.getName()
+            @userRepository.findById(#id).get().getEmail() == authentication.getName()
         """;
 
     @GetMapping("/{id}")

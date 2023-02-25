@@ -1,5 +1,6 @@
 package hexlet.code.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +13,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Getter
 @Setter
@@ -47,13 +51,22 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
+//    @JsonIgnore
     @NotBlank(message = "Password should not be empty")
     @Size(min = 4, message = "Password should be greater than 3")
     @Column(name = "password")
     private String password;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "createdAt")
     private Date createdAt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author")
+    private List<Task> authorTasks;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "executor")
+    private List<Task> executorTasks;
 }

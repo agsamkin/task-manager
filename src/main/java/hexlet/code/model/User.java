@@ -51,7 +51,7 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-//    @JsonIgnore
+    @JsonIgnore
     @NotBlank(message = "Password should not be empty")
     @Size(min = 4, message = "Password should be greater than 3")
     @Column(name = "password")

@@ -1,10 +1,12 @@
 package hexlet.code.controller;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.model.Task;
 import hexlet.code.service.TaskService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
 
@@ -39,8 +42,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getAll() {
-        return taskService.getAllTasks();
+    public List<Task> getAll(@QuerydslPredicate final Predicate predicate) {
+        if (Objects.isNull(predicate)) {
+            return taskService.getAllTasks();
+        }
+        return taskService.getAllTasks(predicate);
     }
 
     @PostMapping
@@ -48,6 +54,7 @@ public class TaskController {
         return taskService.createTask(taskDto);
     }
 
+    @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping("/{id}")
     public Task update(@PathVariable("id") long id,
                              @RequestBody @Valid TaskDto taskDto, BindingResult bindingResult) {

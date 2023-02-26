@@ -1,5 +1,6 @@
 package hexlet.code.service.impl;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 @Service
@@ -40,6 +42,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
+    }
+
+    @Override
+    public List<Task> getAllTasks(Predicate predicate) {
+        return StreamSupport
+                .stream(taskRepository.findAll(predicate).spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     @Override

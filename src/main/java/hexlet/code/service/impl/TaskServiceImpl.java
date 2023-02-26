@@ -1,11 +1,13 @@
 package hexlet.code.service.impl;
 
 import hexlet.code.dto.TaskDto;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.service.LabelService;
 import hexlet.code.service.TaskService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +31,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final LabelService labelService;
 
     private TaskDto convertToTaskDto(Task task) {
         return modelMapper.map(task, TaskDto.class);
@@ -46,7 +50,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(TaskDto taskDto) {
-
         User executor = null;
         if (Objects.nonNull(taskDto.getExecutorId())) {
             executor = userRepository
@@ -54,11 +57,16 @@ public class TaskServiceImpl implements TaskService {
                     .orElseThrow(() -> new NoSuchElementException("Executor not found"));
         }
 
+        List<Label> labels = taskDto.getLabelIds().stream()
+                .map(labelService::getLabelById)
+                .collect(Collectors.toList());
+
         Task newTask = Task.builder()
                 .name(taskDto.getName())
                 .description(taskDto.getDescription())
                 .taskStatus(taskStatusService.getTaskStatusById(taskDto.getTaskStatusId()))
                 .author(userService.getCurrentUser())
+                .labels(labels)
                 .executor(executor).build();
 
         return taskRepository.save(newTask);
@@ -81,6 +89,11 @@ public class TaskServiceImpl implements TaskService {
                 taskDto.getTaskStatusId()
         );
         task.setTaskStatus(taskStatus);
+
+        List<Label> labels = taskDto.getLabelIds().stream()
+                .map(labelService::getLabelById)
+                .collect(Collectors.toList());
+        task.setLabels(labels);
 
         return taskRepository.save(task);
     }

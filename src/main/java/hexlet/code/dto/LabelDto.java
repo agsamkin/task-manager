@@ -6,25 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskDto {
+public class LabelDto {
     @NotBlank(message = "Name should not be empty")
     @Size(min = 2, message = "Name should be greater than 1")
     private String name;
-
-    private String description;
-
-    @NotNull(message = "Task status should not be empty")
-    private Long taskStatusId;
-
-    private Long executorId;
-
-    private List<Long> labelIds;
 }

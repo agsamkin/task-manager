@@ -29,7 +29,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "task_status")
+@Table(name = "task_statuses")
 public class TaskStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

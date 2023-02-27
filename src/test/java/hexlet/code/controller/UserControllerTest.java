@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
@@ -40,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigForIT.class)
 class UserControllerTest {
-
     @Autowired
     private TestUtils testUtils;
 
@@ -67,7 +65,8 @@ class UserControllerTest {
                 .andReturn()
                 .getResponse();
 
-        final User user = fromJson(response.getContentAsString(), new TypeReference<>() {});
+        final User user = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
 
         assertEquals(expectedUser.getId(), user.getId());
         assertEquals(expectedUser.getEmail(), user.getEmail());
@@ -87,7 +86,8 @@ class UserControllerTest {
                 .andReturn()
                 .getResponse();
 
-        final List<User> users = fromJson(response.getContentAsString(), new TypeReference<>() {});
+        final List<User> users = fromJson(response.getContentAsString(), new TypeReference<>() {
+        });
 
         assertThat(users).hasSize(1);
     }
@@ -112,8 +112,8 @@ class UserControllerTest {
         testUtils.regDefaultUser();
 
         final AuthenticationDto loginDto = AuthenticationDto.builder()
-                .email(testUtils.testRegistrationUser.getEmail())
-                .password(testUtils.testRegistrationUser.getPassword()).build();
+                .email(testUtils.getTestRegistrationUser().getEmail())
+                .password(testUtils.getTestRegistrationUser().getPassword()).build();
 
         final var loginRequest =
                 MockMvcRequestBuilders.post(BASE_URL + WebSecurityConfig.LOGIN)
@@ -125,8 +125,8 @@ class UserControllerTest {
     @Test
     public void loginFail() throws Exception {
         final AuthenticationDto loginDto = AuthenticationDto.builder()
-                .email(testUtils.testRegistrationUser.getEmail())
-                .password(testUtils.testRegistrationUser.getPassword()).build();
+                .email(testUtils.getTestRegistrationUser().getEmail())
+                .password(testUtils.getTestRegistrationUser().getPassword()).build();
 
         final var loginRequest =
                 MockMvcRequestBuilders.post(BASE_URL + WebSecurityConfig.LOGIN)
@@ -171,8 +171,7 @@ class UserControllerTest {
         testUtils.regDefaultUser();
 
         final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
-        final var request = delete(BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID
-                , userId);
+        final var request = delete(BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID, userId);
 
         testUtils.perform(request, TEST_USERNAME).andExpect(status().isOk());
         assertEquals(0, userRepository.count());

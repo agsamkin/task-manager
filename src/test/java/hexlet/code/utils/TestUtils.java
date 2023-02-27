@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
 import hexlet.code.controller.UserController;
 import hexlet.code.dto.UserDto;
-import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,11 +46,15 @@ public class TestUtils {
 
     public static final String BASE_URL = "/api";
     public static final String TEST_USERNAME = "test@test.com";
-    public final UserDto testRegistrationUser = UserDto.builder()
+    private final UserDto testRegistrationUser = UserDto.builder()
             .firstName("Test")
             .lastName("Test")
             .email(TEST_USERNAME)
             .password("123").build();
+
+    public UserDto getTestRegistrationUser() {
+        return testRegistrationUser;
+    }
 
     public void clear() {
         taskRepository.deleteAll();

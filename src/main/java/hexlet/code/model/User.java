@@ -37,12 +37,12 @@ public class User {
     private Long id;
 
     @NotBlank(message = "First name should not be empty")
-    @Size(min = 2, message = "First name should be greater than 1")
+    @Size(min = 1, message = "First name should be greater than 1")
     @Column(name = "firstName")
     private String firstName;
 
     @NotBlank(message = "Last name should not be empty")
-    @Size(min = 2, message = "Last name should be greater than 1")
+    @Size(min = 1, message = "Last name should be greater than 1")
     @Column(name = "lastName")
     private String lastName;
 
@@ -53,7 +53,7 @@ public class User {
 
     @JsonIgnore
     @NotBlank(message = "Password should not be empty")
-    @Size(min = 4, message = "Password should be greater than 3")
+    @Size(min = 3, message = "Password should be greater than 3")
     @Column(name = "password")
     private String password;
 

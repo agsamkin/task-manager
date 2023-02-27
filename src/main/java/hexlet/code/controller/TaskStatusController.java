@@ -24,10 +24,11 @@ import static hexlet.code.controller.TaskStatusController.TASK_STATUS_CONTROLLER
 @RequestMapping("${base-url}" + TASK_STATUS_CONTROLLER_PATH)
 public class TaskStatusController {
     public static final String TASK_STATUS_CONTROLLER_PATH = "/statuses";
+    public static final String ID = "/{id}";
 
     private final TaskStatusService taskStatusService;
 
-    @GetMapping("/{id}")
+    @GetMapping(ID)
     public TaskStatus getById(@PathVariable("id") long id) {
        return taskStatusService.getTaskStatusById(id);
     }
@@ -42,13 +43,13 @@ public class TaskStatusController {
         return taskStatusService.createTaskStatus(taskStatusDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(ID)
     public TaskStatus update(@PathVariable("id") long id,
                               @RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
         return taskStatusService.updateTaskStatus(id, taskStatusDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(ID)
     public void delete(@PathVariable("id") long id) {
         taskStatusService.deleteTaskStatus(id);
     }

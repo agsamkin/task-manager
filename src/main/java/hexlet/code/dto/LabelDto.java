@@ -14,6 +14,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class LabelDto {
     @NotBlank(message = "Name should not be empty")
-    @Size(min = 2, message = "Name should be greater than 1")
+    @Size(min = 1, message = "Name should be greater than 1")
     private String name;
 }

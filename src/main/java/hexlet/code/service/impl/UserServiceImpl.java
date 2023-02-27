@@ -31,40 +31,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserDto> getAll() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(this::convertToUserDto)
-                .collect(Collectors.toList());
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public UserDto getUserById(long id) {
+    public User getUserById(long id) {
         return userRepository.findById(id)
-                .map(this::convertToUserDto)
-                .orElseThrow();
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
-    public UserDto createUser(User user) {
+    public User createUser(UserDto userDto) {
         User newUser = User.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .password(passwordEncoder.encode(user.getPassword())).build();
-        return convertToUserDto(userRepository.save(newUser));
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .email(userDto.getEmail())
+                .password(passwordEncoder.encode(userDto.getPassword())).build();
+        return userRepository.save(newUser);
     }
 
     @Override
-    public UserDto updateUser(long id, User user) {
+    public User updateUser(long id, UserDto userDto) {
         return userRepository.findById(id)
                 .map(u -> {
-                    u.setFirstName(user.getFirstName());
-                    u.setLastName(user.getLastName());
-                    u.setEmail(user.getEmail());
-                    u.setPassword(passwordEncoder.encode(user.getPassword()));
+                    u.setFirstName(userDto.getFirstName());
+                    u.setLastName(userDto.getLastName());
+                    u.setEmail(userDto.getEmail());
+                    u.setPassword(passwordEncoder.encode(userDto.getPassword()));
                     return userRepository.save(u);
-                }).map(this::convertToUserDto)
+                })
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

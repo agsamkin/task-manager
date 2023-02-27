@@ -13,7 +13,6 @@ import hexlet.code.service.TaskService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,17 +26,10 @@ import java.util.stream.StreamSupport;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final ModelMapper modelMapper;
-
     private final TaskStatusService taskStatusService;
-
     private final UserService userService;
     private final UserRepository userRepository;
     private final LabelService labelService;
-
-    private TaskDto convertToTaskDto(Task task) {
-        return modelMapper.map(task, TaskDto.class);
-    }
 
     @Override
     public List<Task> getAllTasks() {

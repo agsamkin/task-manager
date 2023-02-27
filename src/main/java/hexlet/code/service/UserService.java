@@ -6,13 +6,13 @@ import hexlet.code.model.User;
 import java.util.List;
 
 public interface UserService {
-    List<UserDto> getAll();
+    List<User> getAll();
 
-    UserDto getUserById(long id);
+    User getUserById(long id);
 
-    UserDto createUser(User user);
+    User createUser(UserDto userDto);
 
-    UserDto updateUser(long id, User user);
+    User updateUser(long id, UserDto userDto);
 
     void deleteUser(long id);
 

@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskDto {
     @NotBlank(message = "Name should not be empty")
-    @Size(min = 2, message = "Name should be greater than 1")
+    @Size(min = 1, message = "Name should be greater than 1")
     private String name;
 
     private String description;

@@ -5,7 +5,6 @@ import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.service.TaskStatusService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +15,6 @@ import java.util.NoSuchElementException;
 public class TaskStatusServiceImpl implements TaskStatusService {
 
     private final TaskStatusRepository taskStatusRepository;
-    private final ModelMapper modelMapper;
-
-    private TaskStatusDto convertToTaskStatusDto(TaskStatus taskStatus) {
-        return modelMapper.map(taskStatus, TaskStatusDto.class);
-    }
 
     @Override
     public List<TaskStatus> getAllTaskStatuses() {

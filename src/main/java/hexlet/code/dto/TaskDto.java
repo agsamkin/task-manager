@@ -1,6 +1,7 @@
 package hexlet.code.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TaskDto {
     @NotBlank(message = "Name should not be empty")
     @Size(min = 1, message = "Name should be greater than 1")

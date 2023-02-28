@@ -5,11 +5,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
 import hexlet.code.controller.LabelController;
+import hexlet.code.controller.TaskController;
 import hexlet.code.controller.TaskStatusController;
 import hexlet.code.controller.UserController;
 import hexlet.code.dto.LabelDto;
+import hexlet.code.dto.TaskDto;
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.UserDto;
+import hexlet.code.model.Label;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
@@ -22,6 +27,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -79,6 +85,32 @@ public class TestUtils {
         taskStatusRepository.deleteAll();
         labelRepository.deleteAll();
         userRepository.deleteAll();
+    }
+
+    public ResultActions regDefaultTask(final String byUser) throws Exception {
+        regDefaultUser();
+        regDefaultLabel(TEST_USERNAME);
+        regDefaultTaskStatus(TEST_USERNAME);
+        final User user = userRepository.findAll().get(0);
+        final TaskStatus taskStatus = taskStatusRepository.findAll().get(0);
+        final Label label = labelRepository.findAll().get(0);
+        final TaskDto testRegTaskDto = new TaskDto(
+                "task",
+                "description",
+                taskStatus.getId(),
+                user.getId(),
+                List.of(label.getId())
+        );
+        return regTask(testRegTaskDto, byUser);
+    }
+
+    public ResultActions regTask(final TaskDto dto, final String byUser) throws Exception {
+        final var request =
+                MockMvcRequestBuilders.post(BASE_URL + TaskController.TASK_CONTROLLER_PATH)
+                .content(asJson(dto))
+                .contentType(APPLICATION_JSON);
+
+        return perform(request, byUser);
     }
 
     public ResultActions regDefaultLabel(final String byUser) throws Exception {

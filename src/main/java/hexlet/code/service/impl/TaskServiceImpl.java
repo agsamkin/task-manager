@@ -58,9 +58,12 @@ public class TaskServiceImpl implements TaskService {
                     .orElseThrow(() -> new NoSuchElementException("Executor not found"));
         }
 
-        List<Label> labels = taskDto.getLabelIds().stream()
-                .map(labelService::getLabelById)
-                .collect(Collectors.toList());
+        List<Label> labels = null;
+        if (Objects.nonNull(taskDto.getLabelIds()) && taskDto.getLabelIds().size() > 0) {
+            labels = taskDto.getLabelIds().stream()
+                    .map(labelService::getLabelById)
+                    .collect(Collectors.toList());
+        }
 
         Task newTask = Task.builder()
                 .name(taskDto.getName())
@@ -91,11 +94,12 @@ public class TaskServiceImpl implements TaskService {
         );
         task.setTaskStatus(taskStatus);
 
-        List<Label> labels = taskDto.getLabelIds().stream()
-                .map(labelService::getLabelById)
-                .collect(Collectors.toList());
-        task.setLabels(labels);
-
+        if (Objects.nonNull(taskDto.getLabelIds()) && taskDto.getLabelIds().size() > 0) {
+            List<Label> labels = taskDto.getLabelIds().stream()
+                    .map(labelService::getLabelById)
+                    .collect(Collectors.toList());
+            task.setLabels(labels);
+        }
         return taskRepository.save(task);
     }
 

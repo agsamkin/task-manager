@@ -100,7 +100,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void twiceCreateUserFail() throws Exception {
+    void twiceCreateUserFail() throws Exception {
         testUtils.regDefaultUser().andExpect(status().isCreated());
         testUtils.regDefaultUser().andExpect(status().isUnprocessableEntity());
 
@@ -108,7 +108,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void login() throws Exception {
+    void login() throws Exception {
         testUtils.regDefaultUser();
 
         final AuthenticationDto loginDto = AuthenticationDto.builder()
@@ -123,7 +123,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void loginFail() throws Exception {
+    void loginFail() throws Exception {
         final AuthenticationDto loginDto = AuthenticationDto.builder()
                 .email(testUtils.getTestRegistrationUser().getEmail())
                 .password(testUtils.getTestRegistrationUser().getPassword()).build();
@@ -178,7 +178,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void deleteUserFails() throws Exception {
+    void deleteUserFails() throws Exception {
         testUtils.regDefaultUser();
 
         final String newFirstName = "New test";

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
+import hexlet.code.controller.LabelController;
 import hexlet.code.controller.TaskStatusController;
 import hexlet.code.controller.UserController;
+import hexlet.code.dto.LabelDto;
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.repository.LabelRepository;
@@ -54,15 +56,22 @@ public class TestUtils {
             .email(TEST_USERNAME)
             .password("123").build();
 
+    private final TaskStatusDto testTaskStatus = TaskStatusDto.builder()
+            .name("Test").build();
+
+    private final LabelDto testLabel = LabelDto.builder()
+            .name("Test").build();
+
     public UserDto getTestRegistrationUser() {
         return testRegistrationUser;
     }
 
-    private final TaskStatusDto testTaskStatus = TaskStatusDto.builder()
-            .name("Test").build();
-
     public TaskStatusDto getTestTaskStatus() {
         return testTaskStatus;
+    }
+
+    public LabelDto getTestLabel() {
+        return testLabel;
     }
 
     public void clear() {
@@ -70,6 +79,19 @@ public class TestUtils {
         taskStatusRepository.deleteAll();
         labelRepository.deleteAll();
         userRepository.deleteAll();
+    }
+
+    public ResultActions regDefaultLabel(final String byUser) throws Exception {
+        return regLabel(testLabel, byUser);
+    }
+
+    public ResultActions regLabel(final LabelDto labelDto, final String byUser) throws Exception {
+        final var request =
+                MockMvcRequestBuilders.post(BASE_URL + LabelController.LABEL_CONTROLLER_PATH)
+                        .content(asJson(labelDto))
+                        .contentType(APPLICATION_JSON);
+
+        return perform(request, byUser);
     }
 
     public ResultActions regDefaultTaskStatus(final String byUser) throws Exception {

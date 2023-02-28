@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(SpringConfigForIT.TEST_PROFILE)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigForIT.class)
-class TaskControllerTest {
+class TaskStatusControllerTest {
     @Autowired
     private TestUtils testUtils;
 
@@ -72,13 +72,13 @@ class TaskControllerTest {
     }
 
     @Test
-    public void getTaskStatusByIdFails() throws Exception {
+    void getTaskStatusByIdFails() throws Exception {
         testUtils.regDefaultUser();
         testUtils.regDefaultTaskStatus(TEST_USERNAME);
 
         final TaskStatus expectedStatus = taskStatusRepository.findAll().get(0);
-
         final var request = get(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, expectedStatus.getId());
+
         Exception exception = assertThrows(Exception.class, () -> testUtils.perform(request));
 
         String message = exception.getMessage();
@@ -124,6 +124,7 @@ class TaskControllerTest {
 
         final long statusID = taskStatusRepository.findAll().get(0).getId();
         final String newTaskStatusName = "new name";
+
         TaskStatusDto taskStatusDto = TaskStatusDto.builder()
                 .name(newTaskStatusName).build();
 
@@ -154,7 +155,7 @@ class TaskControllerTest {
     }
 
     @Test
-    public void deleteTaskStatusFails() throws Exception {
+    void deleteTaskStatusFails() throws Exception {
         testUtils.regDefaultUser();
         testUtils.regDefaultTaskStatus(TEST_USERNAME);
         final Long statusId = taskStatusRepository.findAll().get(0).getId() + 1;

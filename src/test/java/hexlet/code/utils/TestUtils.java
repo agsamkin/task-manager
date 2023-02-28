@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
+import hexlet.code.controller.TaskStatusController;
 import hexlet.code.controller.UserController;
+import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
@@ -56,11 +58,31 @@ public class TestUtils {
         return testRegistrationUser;
     }
 
+    private final TaskStatusDto testTaskStatus = TaskStatusDto.builder()
+            .name("Test").build();
+
+    public TaskStatusDto getTestTaskStatus() {
+        return testTaskStatus;
+    }
+
     public void clear() {
         taskRepository.deleteAll();
         taskStatusRepository.deleteAll();
         labelRepository.deleteAll();
         userRepository.deleteAll();
+    }
+
+    public ResultActions regDefaultTaskStatus(final String byUser) throws Exception {
+        return regTaskStatus(testTaskStatus, byUser);
+    }
+
+    public ResultActions regTaskStatus(final TaskStatusDto taskStatusDto, final String byUser) throws Exception {
+        final var request =
+                MockMvcRequestBuilders.post(BASE_URL + TaskStatusController.TASK_STATUS_CONTROLLER_PATH)
+                        .content(asJson(taskStatusDto))
+                        .contentType(APPLICATION_JSON);
+
+        return perform(request, byUser);
     }
 
     public ResultActions regDefaultUser() throws Exception {

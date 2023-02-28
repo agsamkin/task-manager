@@ -1,6 +1,7 @@
 package hexlet.code.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TaskStatusDto {
     @NotBlank(message = "Name should not be empty")
     @Size(min = 1, message = "Name should be greater than 1")

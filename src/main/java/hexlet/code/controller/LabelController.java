@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
 
 import static hexlet.code.controller.LabelController.LABEL_CONTROLLER_PATH;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,6 +42,7 @@ public class LabelController {
         return labelService.getAllLabels();
     }
 
+    @ResponseStatus(CREATED)
     @PostMapping
     public Label create(@RequestBody @Valid LabelDto labelDto, BindingResult bindingResult) {
         return labelService.createLabel(labelDto);

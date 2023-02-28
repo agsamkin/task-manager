@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,6 +51,7 @@ public class TaskController {
         return taskService.getAllTasks(predicate);
     }
 
+    @ResponseStatus(CREATED)
     @PostMapping
     public Task create(@RequestBody @Valid TaskDto taskDto, BindingResult bindingResult) {
         return taskService.createTask(taskDto);

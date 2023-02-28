@@ -51,7 +51,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getById() throws Exception {
+    void getUserById() throws Exception {
         testUtils.regDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
 
@@ -75,7 +75,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getAll() throws Exception {
+    void getAllUsers() throws Exception {
         testUtils.regDefaultUser();
 
         final var request = MockMvcRequestBuilders
@@ -93,14 +93,14 @@ class UserControllerTest {
     }
 
     @Test
-    void create() throws Exception {
+    void createUser() throws Exception {
         assertEquals(0, userRepository.count());
         testUtils.regDefaultUser().andExpect(status().isCreated());
         assertEquals(1, userRepository.count());
     }
 
     @Test
-    public void twiceRegTheSameUserFail() throws Exception {
+    public void twiceCreateUserFail() throws Exception {
         testUtils.regDefaultUser().andExpect(status().isCreated());
         testUtils.regDefaultUser().andExpect(status().isUnprocessableEntity());
 
@@ -136,7 +136,7 @@ class UserControllerTest {
     }
 
     @Test
-    void update() throws Exception {
+    void updateUser() throws Exception {
         testUtils.regDefaultUser();
 
         final User userUpdate = userRepository.findByEmail(TEST_USERNAME).get();

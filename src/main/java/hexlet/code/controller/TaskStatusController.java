@@ -6,6 +6,8 @@ import hexlet.code.service.TaskStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +26,7 @@ import java.util.List;
 import static hexlet.code.controller.TaskStatusController.TASK_STATUS_CONTROLLER_PATH;
 import static org.springframework.http.HttpStatus.CREATED;
 
+@Tag(name = "task-status-controller", description = "Task status crud")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${base-url}" + TASK_STATUS_CONTROLLER_PATH)
@@ -33,6 +36,7 @@ public class TaskStatusController {
 
     private final TaskStatusService taskStatusService;
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get task status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task status was found"),
@@ -43,6 +47,7 @@ public class TaskStatusController {
        return taskStatusService.getTaskStatusById(id);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get all task statuses")
     @ApiResponse(responseCode = "200")
     @GetMapping
@@ -50,6 +55,7 @@ public class TaskStatusController {
         return taskStatusService.getAllTaskStatuses();
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Create new task status")
     @ApiResponse(responseCode = "201", description = "Task status has been created")
     @ResponseStatus(CREATED)
@@ -58,6 +64,7 @@ public class TaskStatusController {
         return taskStatusService.createTaskStatus(taskStatusDto);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update task status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task status has been updated"),
@@ -69,6 +76,7 @@ public class TaskStatusController {
         return taskStatusService.updateTaskStatus(id, taskStatusDto);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Delete task status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task status has been deleted"),

@@ -6,6 +6,8 @@ import hexlet.code.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,7 @@ import java.util.List;
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpStatus.CREATED;
 
+@Tag(name = "user-controller", description = "User crud")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${base-url}" + USER_CONTROLLER_PATH)
@@ -63,6 +66,7 @@ public class UserController {
         return userService.createUser(userDto);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User has been updated"),
@@ -75,6 +79,7 @@ public class UserController {
         return userService.updateUser(id, userDto);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User has been deleted"),

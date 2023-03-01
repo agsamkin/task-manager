@@ -8,6 +8,8 @@ import hexlet.code.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,7 @@ import java.util.Objects;
 import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
 import static org.springframework.http.HttpStatus.CREATED;
 
+@Tag(name = "task-controller", description = "Task crud")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${base-url}" + TASK_CONTROLLER_PATH)
@@ -41,6 +44,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get task by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task was found"),
@@ -51,6 +55,7 @@ public class TaskController {
         return taskService.getTaskById(id);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get all tasks if no filtration is set."
             + " Else Retrieves all the elements that match the conditions defined by the specified predicate")
     @ApiResponse(responseCode = "200")
@@ -62,6 +67,7 @@ public class TaskController {
         return taskService.getAllTasks(predicate);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Create new task")
     @ApiResponse(responseCode = "201", description = "Task has been created")
     @ResponseStatus(CREATED)
@@ -70,6 +76,7 @@ public class TaskController {
         return taskService.createTask(taskDto);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task has been updated"),
@@ -82,6 +89,7 @@ public class TaskController {
         return taskService.updateTask(id, taskDto);
     }
 
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Delete task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task has been deleted"),

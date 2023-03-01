@@ -3,6 +3,7 @@ package hexlet.code.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.AuthenticationDto;
 import hexlet.code.component.JWTHelper;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

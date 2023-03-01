@@ -33,7 +33,7 @@ public class TaskStatusController {
 
     private final TaskStatusService taskStatusService;
 
-    @Operation(summary = "Get a task status by id")
+    @Operation(summary = "Get task status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task status was found"),
             @ApiResponse(responseCode = "404", description = "Task status with this id wasn`t found")
@@ -43,14 +43,14 @@ public class TaskStatusController {
        return taskStatusService.getTaskStatusById(id);
     }
 
-    @Operation(summary = "Get all statuses")
+    @Operation(summary = "Get all task statuses")
     @ApiResponse(responseCode = "200")
     @GetMapping
     public List<TaskStatus> getAll() {
         return taskStatusService.getAllTaskStatuses();
     }
 
-    @Operation(summary = "Create a new task status")
+    @Operation(summary = "Create new task status")
     @ApiResponse(responseCode = "201", description = "Task status has been created")
     @ResponseStatus(CREATED)
     @PostMapping
@@ -69,7 +69,7 @@ public class TaskStatusController {
         return taskStatusService.updateTaskStatus(id, taskStatusDto);
     }
 
-    @Operation(summary = "Delete a task status")
+    @Operation(summary = "Delete task status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task status has been deleted"),
             @ApiResponse(responseCode = "404", description = "Task status with this id wasn`t found")

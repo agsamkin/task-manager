@@ -41,7 +41,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @Operation(summary = "Get a task by id")
+    @Operation(summary = "Get task by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task was found"),
             @ApiResponse(responseCode = "404", description = "Task with this id wasn`t found")
@@ -62,7 +62,7 @@ public class TaskController {
         return taskService.getAllTasks(predicate);
     }
 
-    @Operation(summary = "Create a new task")
+    @Operation(summary = "Create new task")
     @ApiResponse(responseCode = "201", description = "Task has been created")
     @ResponseStatus(CREATED)
     @PostMapping
@@ -70,7 +70,7 @@ public class TaskController {
         return taskService.createTask(taskDto);
     }
 
-    @Operation(summary = "Update a task")
+    @Operation(summary = "Update task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task has been updated"),
             @ApiResponse(responseCode = "404", description = "Task with this id wasn`t found")

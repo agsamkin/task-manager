@@ -38,7 +38,7 @@ public class UserController {
             @userRepository.findById(#id).get().getEmail() == authentication.getName()
         """;
 
-    @Operation(summary = "Get a user")
+    @Operation(summary = "Get user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User was found"),
             @ApiResponse(responseCode = "404", description = "User with this id wasn`t found")
@@ -75,7 +75,7 @@ public class UserController {
         return userService.updateUser(id, userDto);
     }
 
-    @Operation(summary = "Delete a user")
+    @Operation(summary = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User has been deleted"),
             @ApiResponse(responseCode = "404", description = "User with this id wasn`t found")

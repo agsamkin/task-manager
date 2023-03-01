@@ -35,7 +35,7 @@ public class LabelController {
 
     private final LabelService labelService;
 
-    @Operation(summary = "Get a label by id")
+    @Operation(summary = "Get label by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Label was found"),
             @ApiResponse(responseCode = "404", description = "Label with this id wasn`t found")
@@ -52,7 +52,7 @@ public class LabelController {
         return labelService.getAllLabels();
     }
 
-    @Operation(summary = "Create a new label")
+    @Operation(summary = "Create new label")
     @ApiResponse(responseCode = "201", description = "Label has been created")
     @ResponseStatus(CREATED)
     @PostMapping

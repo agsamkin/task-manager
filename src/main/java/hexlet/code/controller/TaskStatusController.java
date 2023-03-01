@@ -3,6 +3,9 @@ package hexlet.code.controller;
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.service.TaskStatusService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,28 +33,47 @@ public class TaskStatusController {
 
     private final TaskStatusService taskStatusService;
 
+    @Operation(summary = "Get a task status by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task status was found"),
+            @ApiResponse(responseCode = "404", description = "Task status with this id wasn`t found")
+    })
     @GetMapping(ID)
     public TaskStatus getById(@PathVariable("id") long id) {
        return taskStatusService.getTaskStatusById(id);
     }
 
+    @Operation(summary = "Get all statuses")
+    @ApiResponse(responseCode = "200")
     @GetMapping
     public List<TaskStatus> getAll() {
         return taskStatusService.getAllTaskStatuses();
     }
 
+    @Operation(summary = "Create a new task status")
+    @ApiResponse(responseCode = "201", description = "Task status has been created")
     @ResponseStatus(CREATED)
     @PostMapping
     public TaskStatus create(@RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
         return taskStatusService.createTaskStatus(taskStatusDto);
     }
 
+    @Operation(summary = "Update task status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Task status has been updated"),
+            @ApiResponse(responseCode = "404", description = "Task status with this id wasn`t found")
+    })
     @PutMapping(ID)
     public TaskStatus update(@PathVariable("id") long id,
                               @RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
         return taskStatusService.updateTaskStatus(id, taskStatusDto);
     }
 
+    @Operation(summary = "Delete a task status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Task status has been deleted"),
+            @ApiResponse(responseCode = "404", description = "Task status with this id wasn`t found")
+    })
     @DeleteMapping(ID)
     public void delete(@PathVariable("id") long id) {
         taskStatusService.deleteTaskStatus(id);

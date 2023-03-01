@@ -4,6 +4,9 @@ import hexlet.code.dto.LabelDto;
 import hexlet.code.model.Label;
 import hexlet.code.service.LabelService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.validation.BindingResult;
@@ -32,28 +35,47 @@ public class LabelController {
 
     private final LabelService labelService;
 
+    @Operation(summary = "Get a label by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Label was found"),
+            @ApiResponse(responseCode = "404", description = "Label with this id wasn`t found")
+    })
     @GetMapping(ID)
     public Label getById(@PathVariable("id") long id) {
         return labelService.getLabelById(id);
     }
 
+    @Operation(summary = "Get all labels")
+    @ApiResponse(responseCode = "200")
     @GetMapping
     public List<Label> getAll() {
         return labelService.getAllLabels();
     }
 
+    @Operation(summary = "Create a new label")
+    @ApiResponse(responseCode = "201", description = "Label has been created")
     @ResponseStatus(CREATED)
     @PostMapping
     public Label create(@RequestBody @Valid LabelDto labelDto, BindingResult bindingResult) {
         return labelService.createLabel(labelDto);
     }
 
+    @Operation(summary = "Update label")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Label has been updated"),
+            @ApiResponse(responseCode = "404", description = "Label with this id wasn`t found")
+    })
     @PutMapping(ID)
     public Label update(@PathVariable("id") long id,
                        @RequestBody @Valid LabelDto labelDto, BindingResult bindingResult) {
         return labelService.updateLabel(id, labelDto);
     }
 
+    @Operation(summary = "Delete label")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Label has been deleted"),
+            @ApiResponse(responseCode = "404", description = "Label with this id wasn`t found")
+    })
     @DeleteMapping(ID)
     public void delete(@PathVariable("id") long id) {
         labelService.deleteLabel(id);

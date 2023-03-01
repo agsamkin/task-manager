@@ -9,7 +9,6 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -34,6 +33,4 @@ public class UserDto {
     @NotBlank(message = "Password should not be empty")
     @Size(min = 3, message = "Password should be greater than 3")
     private String password;
-
-    private Date createdAt;
 }

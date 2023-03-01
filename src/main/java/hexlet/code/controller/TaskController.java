@@ -5,6 +5,9 @@ import hexlet.code.dto.TaskDto;
 import hexlet.code.model.Task;
 import hexlet.code.service.TaskService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,11 +41,19 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    @Operation(summary = "Get a task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task was found"),
+            @ApiResponse(responseCode = "404", description = "Task with this id wasn`t found")
+    })
     @GetMapping(ID)
     public Task getById(@PathVariable("id") long id) {
         return taskService.getTaskById(id);
     }
 
+    @Operation(summary = "Get all tasks if no filtration is set."
+            + " Else Retrieves all the elements that match the conditions defined by the specified predicate")
+    @ApiResponse(responseCode = "200")
     @GetMapping
     public List<Task> getAll(@QuerydslPredicate final Predicate predicate) {
         if (Objects.isNull(predicate)) {
@@ -51,12 +62,19 @@ public class TaskController {
         return taskService.getAllTasks(predicate);
     }
 
+    @Operation(summary = "Create a new task")
+    @ApiResponse(responseCode = "201", description = "Task has been created")
     @ResponseStatus(CREATED)
     @PostMapping
     public Task create(@RequestBody @Valid TaskDto taskDto, BindingResult bindingResult) {
         return taskService.createTask(taskDto);
     }
 
+    @Operation(summary = "Update a task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Task has been updated"),
+            @ApiResponse(responseCode = "404", description = "Task with this id wasn`t found")
+    })
     @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping(ID)
     public Task update(@PathVariable("id") long id,
@@ -64,6 +82,11 @@ public class TaskController {
         return taskService.updateTask(id, taskDto);
     }
 
+    @Operation(summary = "Delete task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Task has been deleted"),
+            @ApiResponse(responseCode = "404", description = "Task with this id wasn`t found")
+    })
     @PreAuthorize(ONLY_OWNER_BY_ID)
     @DeleteMapping(ID)
     public void delete(@PathVariable("id") long id) {

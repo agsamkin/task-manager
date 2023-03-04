@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -16,6 +15,5 @@ import javax.validation.constraints.Size;
 @Builder
 public class LabelDto {
     @NotBlank(message = "Name should not be empty")
-    @Size(min = 1, message = "Name should be greater than 1")
     private String name;
 }

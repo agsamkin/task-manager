@@ -21,16 +21,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
     private final JWTHelper jwtHelper;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper mapper;
 
     public JWTAuthenticationFilter(final AuthenticationManager authenticationManager,
-                                   RequestMatcher loginRequest, final JWTHelper jwtHelper, ObjectMapper objectMapper) {
+                                   RequestMatcher loginRequest, final JWTHelper jwtHelper, ObjectMapper mapper) {
         super(authenticationManager);
         super.setRequiresAuthenticationRequestMatcher(loginRequest);
         this.jwtHelper = jwtHelper;
-        this.objectMapper = objectMapper;
+        this.mapper = mapper;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             final String json = request.getReader()
                     .lines()
                     .collect(Collectors.joining());
-            return objectMapper.readValue(json, AuthenticationDto.class);
+            return mapper.readValue(json, AuthenticationDto.class);
         } catch (IOException e) {
             throw new BadCredentialsException("Can't extract login data from request");
         }

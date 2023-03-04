@@ -13,7 +13,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Service
 public class TaskStatusServiceImpl implements TaskStatusService {
-
     private final TaskStatusRepository taskStatusRepository;
 
     @Override

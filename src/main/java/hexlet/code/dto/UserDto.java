@@ -19,11 +19,9 @@ public class UserDto {
     private Long id;
 
     @NotBlank(message = "First name should not be empty")
-    @Size(min = 1, message = "First name should be greater than 1")
     private String firstName;
 
     @NotBlank(message = "Last name should not be empty")
-    @Size(min = 1, message = "Last name should be greater than 1")
     private String lastName;
 
     @NotBlank(message = "Email should not be empty")

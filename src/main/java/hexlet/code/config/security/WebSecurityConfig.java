@@ -31,7 +31,6 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     public static final String LOGIN = "/login";
 
     public static final List<GrantedAuthority> DEFAULT_AUTHORITIES

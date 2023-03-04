@@ -20,7 +20,6 @@ import static hexlet.code.config.security.WebSecurityConfig.DEFAULT_AUTHORITIES;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;

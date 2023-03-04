@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.config.SpringConfigForIT;
 import hexlet.code.config.security.WebSecurityConfig;
 import hexlet.code.dto.AuthenticationDto;
-import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import static hexlet.code.utils.TestUtils.BASE_URL;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME;
+import static hexlet.code.utils.TestUtils.TEST_USER_1;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,26 +46,26 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     @BeforeEach
-    void clear() {
+    public void clear() {
         testUtils.clear();
     }
 
     @Test
-    void getUserById() throws Exception {
+    public void getUserById() throws Exception {
         testUtils.regDefaultUser();
-        final User expectedUser = userRepository.findAll().get(0);
+        User expectedUser = userRepository.findAll().get(0);
 
-        final var request = MockMvcRequestBuilders
+        var request = MockMvcRequestBuilders
                 .get(BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID,
                         expectedUser.getId());
 
-        final var response = testUtils.perform(
+        var response = testUtils.perform(
                 request, expectedUser.getEmail())
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
-        final User user = fromJson(response.getContentAsString(), new TypeReference<>() {
+        User user = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
         assertEquals(expectedUser.getId(), user.getId());
@@ -75,32 +75,34 @@ class UserControllerTest {
     }
 
     @Test
-    void getAllUsers() throws Exception {
+    public void getAllUsers() throws Exception {
         testUtils.regDefaultUser();
 
-        final var request = MockMvcRequestBuilders
+        var request = MockMvcRequestBuilders
                 .get(BASE_URL + UserController.USER_CONTROLLER_PATH);
 
-        final var response = testUtils.perform(request)
+        var response = testUtils.perform(request)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
-        final List<User> users = fromJson(response.getContentAsString(), new TypeReference<>() {
+        List<User> users = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
         assertThat(users).hasSize(1);
     }
 
     @Test
-    void createUser() throws Exception {
+    public void createUser() throws Exception {
         assertEquals(0, userRepository.count());
+
         testUtils.regDefaultUser().andExpect(status().isCreated());
+
         assertEquals(1, userRepository.count());
     }
 
     @Test
-    void twiceCreateUserFail() throws Exception {
+    public void twiceCreateUserFail() throws Exception {
         testUtils.regDefaultUser().andExpect(status().isCreated());
         testUtils.regDefaultUser().andExpect(status().isUnprocessableEntity());
 
@@ -108,97 +110,78 @@ class UserControllerTest {
     }
 
     @Test
-    void login() throws Exception {
+    public void login() throws Exception {
         testUtils.regDefaultUser();
 
-        final AuthenticationDto loginDto = AuthenticationDto.builder()
+        AuthenticationDto loginDto = AuthenticationDto.builder()
                 .email(testUtils.getTestRegistrationUser().getEmail())
                 .password(testUtils.getTestRegistrationUser().getPassword()).build();
 
-        final var loginRequest =
+        var request =
                 MockMvcRequestBuilders.post(BASE_URL + WebSecurityConfig.LOGIN)
                         .content(asJson(loginDto))
                         .contentType(APPLICATION_JSON);
-        testUtils.perform(loginRequest).andExpect(status().isOk());
+
+        testUtils.perform(request).andExpect(status().isOk());
     }
 
     @Test
-    void loginFail() throws Exception {
-        final AuthenticationDto loginDto = AuthenticationDto.builder()
+    public void loginFail() throws Exception {
+        AuthenticationDto loginDto = AuthenticationDto.builder()
                 .email(testUtils.getTestRegistrationUser().getEmail())
                 .password(testUtils.getTestRegistrationUser().getPassword()).build();
 
-        final var loginRequest =
+        var request =
                 MockMvcRequestBuilders.post(BASE_URL + WebSecurityConfig.LOGIN)
                         .content(asJson(loginDto))
                         .contentType(APPLICATION_JSON);
-        testUtils.perform(loginRequest).andExpect(status().isUnauthorized());
+
+        testUtils.perform(request).andExpect(status().isUnauthorized());
     }
 
     @Test
-    void updateUser() throws Exception {
+    public void updateUser() throws Exception {
         testUtils.regDefaultUser();
 
-        final User userUpdate = userRepository.findByEmail(TEST_USERNAME).get();
+        User userUpdate = userRepository.findByEmail(TEST_USERNAME).get();
 
-        final String newFirstName = "New test";
-        final String newLastName = "New test";
-        final String newEmail = "new_test@test.ru";
-        final String newPassword = "456";
-
-        final UserDto newUserDto = UserDto.builder()
-                .firstName(newFirstName)
-                .lastName(newLastName)
-                .email(newEmail)
-                .password("456").build();
-
-        final var request = MockMvcRequestBuilders
+        var request = MockMvcRequestBuilders
                 .put(BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID,
                         userUpdate.getId());
 
-        final var updateRequest =
-                        request.content(asJson(newUserDto)).contentType(APPLICATION_JSON);
+        var updateRequest =
+                        request.content(asJson(TEST_USER_1)).contentType(APPLICATION_JSON);
 
         testUtils.perform(updateRequest, TEST_USERNAME).andExpect(status().isOk());
 
         assertTrue(userRepository.existsById(userUpdate.getId()));
         assertNull(userRepository.findByEmail(TEST_USERNAME).orElse(null));
-        assertNotNull(userRepository.findByEmail(newEmail).orElse(null));
+        assertNotNull(userRepository.findByEmail(TEST_USER_1.getEmail()).orElse(null));
     }
 
     @Test
-    void deleteUser() throws Exception {
+    public void deleteUser() throws Exception {
         testUtils.regDefaultUser();
 
-        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
-        final var request = delete(BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID, userId);
+        Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
+        var request = delete(BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID, userId);
 
         testUtils.perform(request, TEST_USERNAME).andExpect(status().isOk());
+
         assertEquals(0, userRepository.count());
     }
 
     @Test
-    void deleteUserFails() throws Exception {
+    public void deleteUserFails() throws Exception {
         testUtils.regDefaultUser();
+        testUtils.regUser(TEST_USER_1);
 
-        final String newFirstName = "New test";
-        final String newLastName = "New test";
-        final String newEmail = "new_test@test.ru";
-        final String newPassword = "456";
+        Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
 
-        final UserDto newUserDto = UserDto.builder()
-                .firstName(newFirstName)
-                .lastName(newLastName)
-                .email(newEmail)
-                .password("456").build();
-
-        testUtils.regUser(newUserDto);
-
-        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
-
-        final var request = delete(
+        var request = delete(
                 BASE_URL + UserController.USER_CONTROLLER_PATH + UserController.ID, userId);
-        testUtils.perform(request, newEmail).andExpect(status().isForbidden());
+        testUtils.perform(request, TEST_USER_1.getEmail()).andExpect(status().isForbidden());
+
         assertEquals(2, userRepository.count());
     }
 }

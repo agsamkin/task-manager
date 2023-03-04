@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class LoginController {
     @PostMapping
     public String login(@RequestBody AuthenticationDto authenticationDto) {
         // Этот эндпоинт обсуживается фильтром JWTAuthenticationFilter
-        // и нужен только для получения доступа к нему из документации swagger
-        return null;
+        // и нужен только для получения доступа к нему из документации Swagger
+        return StringUtils.EMPTY;
     }
 }

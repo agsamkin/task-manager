@@ -42,7 +42,6 @@ public class AppApplication {
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(); // без шифрования пароля
+        return new BCryptPasswordEncoder();
     }
-
 }

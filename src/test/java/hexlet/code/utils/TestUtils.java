@@ -35,7 +35,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 public class TestUtils {
-
     @Autowired
     private TaskRepository taskRepository;
 
@@ -56,28 +55,33 @@ public class TestUtils {
 
     public static final String BASE_URL = "/api";
     public static final String TEST_USERNAME = "test@test.com";
+
     private final UserDto testRegistrationUser = UserDto.builder()
-            .firstName("Test")
-            .lastName("Test")
+            .firstName("First name")
+            .lastName("Last name")
             .email(TEST_USERNAME)
-            .password("123").build();
+            .password("Password").build();
 
-    private final TaskStatusDto testTaskStatus = TaskStatusDto.builder()
-            .name("Test").build();
+    public static final UserDto TEST_USER_1 = UserDto.builder()
+            .firstName("New first name")
+            .lastName("New last name")
+            .email("new_test@test.com")
+            .password("New password").build();
 
-    private final LabelDto testLabel = LabelDto.builder()
-            .name("Test").build();
+    public static final TaskStatusDto TEST_TASK_STATUS_1 = TaskStatusDto.builder()
+            .name("Task status").build();
+
+    public static final TaskStatusDto TEST_TASK_STATUS_2 = TaskStatusDto.builder()
+            .name("New task status").build();
+
+    public static final LabelDto TEST_LABEL_1 = LabelDto.builder()
+            .name("Label").build();
+
+    public static final LabelDto TEST_LABEL_2 = LabelDto.builder()
+            .name("New label").build();
 
     public UserDto getTestRegistrationUser() {
         return testRegistrationUser;
-    }
-
-    public TaskStatusDto getTestTaskStatus() {
-        return testTaskStatus;
-    }
-
-    public LabelDto getTestLabel() {
-        return testLabel;
     }
 
     public void clear() {
@@ -95,8 +99,8 @@ public class TestUtils {
         final TaskStatus taskStatus = taskStatusRepository.findAll().get(0);
         final Label label = labelRepository.findAll().get(0);
         final TaskDto testRegTaskDto = new TaskDto(
-                "task",
-                "description",
+                "Task name",
+                "Task description",
                 taskStatus.getId(),
                 user.getId(),
                 List.of(label.getId())
@@ -114,7 +118,7 @@ public class TestUtils {
     }
 
     public ResultActions regDefaultLabel(final String byUser) throws Exception {
-        return regLabel(testLabel, byUser);
+        return regLabel(TEST_LABEL_1, byUser);
     }
 
     public ResultActions regLabel(final LabelDto labelDto, final String byUser) throws Exception {
@@ -127,7 +131,7 @@ public class TestUtils {
     }
 
     public ResultActions regDefaultTaskStatus(final String byUser) throws Exception {
-        return regTaskStatus(testTaskStatus, byUser);
+        return regTaskStatus(TEST_TASK_STATUS_1, byUser);
     }
 
     public ResultActions regTaskStatus(final TaskStatusDto taskStatusDto, final String byUser) throws Exception {

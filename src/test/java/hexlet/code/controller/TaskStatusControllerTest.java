@@ -2,7 +2,6 @@ package hexlet.code.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.config.SpringConfigForIT;
-import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.utils.TestUtils;
@@ -20,6 +19,8 @@ import java.util.List;
 import static hexlet.code.controller.TaskStatusController.ID;
 import static hexlet.code.controller.TaskStatusController.TASK_STATUS_CONTROLLER_PATH;
 import static hexlet.code.utils.TestUtils.BASE_URL;
+import static hexlet.code.utils.TestUtils.TEST_TASK_STATUS_1;
+import static hexlet.code.utils.TestUtils.TEST_TASK_STATUS_2;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
@@ -40,31 +41,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigForIT.class)
 class TaskStatusControllerTest {
     @Autowired
-    private TestUtils testUtils;
+    private TestUtils utils;
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
 
     @BeforeEach
-    void clear() {
-        testUtils.clear();
+    public void clear() {
+        utils.clear();
     }
 
     @Test
-    void getTaskStatusById() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isCreated());
+    public void getTaskStatusById() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isCreated());
+
         assertEquals(1, taskStatusRepository.count());
 
-        final TaskStatus expectedStatus = taskStatusRepository.findAll().get(0);
+        TaskStatus expectedStatus = taskStatusRepository.findAll().get(0);
 
-        final var request = get(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, expectedStatus.getId());
-        final var response = testUtils
+        var request = get(
+                BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, expectedStatus.getId());
+        var response = utils
                 .perform(request, TEST_USERNAME)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
-        final TaskStatus status = fromJson(response.getContentAsString(), new TypeReference<>() {
+
+        TaskStatus status = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
         assertEquals(expectedStatus.getId(), status.getId());
@@ -72,98 +76,105 @@ class TaskStatusControllerTest {
     }
 
     @Test
-    void getTaskStatusByIdFails() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME);
+    public void getTaskStatusByIdFails() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME);
 
-        final TaskStatus expectedStatus = taskStatusRepository.findAll().get(0);
-        final var request = get(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, expectedStatus.getId());
+        TaskStatus expectedStatus = taskStatusRepository.findAll().get(0);
+        var request = get(
+                BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, expectedStatus.getId());
 
-        Exception exception = assertThrows(Exception.class, () -> testUtils.perform(request));
+        Exception exception = assertThrows(Exception.class, () -> utils.perform(request));
 
         String message = exception.getMessage();
         assertTrue(message.contains("No value present"));
     }
 
     @Test
-    void getAllTaskStatuses() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME);
+    public void getAllTaskStatuses() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME);
 
-        final var request = get(BASE_URL + TASK_STATUS_CONTROLLER_PATH);
-        final var response = testUtils.perform(request, TEST_USERNAME)
+        var request = get(
+                BASE_URL + TASK_STATUS_CONTROLLER_PATH);
+        var response = utils.perform(request, TEST_USERNAME)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
-        final List<TaskStatus> taskStatuses = fromJson(response.getContentAsString(), new TypeReference<>() {
+        List<TaskStatus> taskStatuses = fromJson(response.getContentAsString(),
+                new TypeReference<>() {
         });
         assertThat(taskStatuses).hasSize(1);
     }
 
     @Test
-    void createTaskStatus() throws Exception {
+    public void createTaskStatus() throws Exception {
         assertEquals(0, taskStatusRepository.count());
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isCreated());
+
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isCreated());
+
         assertEquals(1, taskStatusRepository.count());
     }
 
     @Test
     public void twiceCreateTaskStatusFail() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isCreated());
-        testUtils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isUnprocessableEntity());
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isCreated());
+        utils.regDefaultTaskStatus(TEST_USERNAME).andExpect(status().isUnprocessableEntity());
+
         assertEquals(1, taskStatusRepository.count());
     }
 
     @Test
-    void updateTaskStatus() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME);
+    public void updateTaskStatus() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME);
 
-        final long statusID = taskStatusRepository.findAll().get(0).getId();
-        final String newTaskStatusName = "new name";
+        long statusID = taskStatusRepository.findAll().get(0).getId();
 
-        TaskStatusDto taskStatusDto = TaskStatusDto.builder()
-                .name(newTaskStatusName).build();
-
-        final var request = put(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, statusID);
-        final var updateRequest = request
-                        .content(asJson(taskStatusDto))
+        var request = put(
+                BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, statusID);
+        var updateRequest = request
+                        .content(asJson(TEST_TASK_STATUS_2))
                         .contentType(APPLICATION_JSON);
 
-        testUtils.perform(updateRequest, newTaskStatusName).andExpect(status().isOk());
+        utils.perform(updateRequest, TEST_TASK_STATUS_2.getName()).andExpect(status().isOk());
 
         assertTrue(taskStatusRepository.existsById(statusID));
-        assertTrue(taskStatusRepository.findByName(testUtils.getTestTaskStatus().getName()).isEmpty());
-        assertTrue(taskStatusRepository.findByName(newTaskStatusName).isPresent());
+        assertTrue(taskStatusRepository.findByName(TEST_TASK_STATUS_1.getName()).isEmpty());
+        assertTrue(taskStatusRepository.findByName(TEST_TASK_STATUS_2.getName()).isPresent());
     }
 
     @Test
-    void deleteTaskStatus() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME);
-        final Long statusId = taskStatusRepository.findAll().get(0).getId();
+    public void deleteTaskStatus() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME);
+
+        Long statusId = taskStatusRepository.findAll().get(0).getId();
         assertEquals(1, taskStatusRepository.count());
 
-        final var request = delete(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, statusId);
-        testUtils.perform(request, TEST_USERNAME)
+        var request = delete(
+                BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, statusId);
+
+        utils.perform(request, TEST_USERNAME)
                 .andExpect(status().isOk());
 
         assertEquals(0, taskStatusRepository.count());
     }
 
     @Test
-    void deleteTaskStatusFails() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultTaskStatus(TEST_USERNAME);
-        final Long statusId = taskStatusRepository.findAll().get(0).getId() + 1;
+    public void deleteTaskStatusFails() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultTaskStatus(TEST_USERNAME);
 
-        final var request = delete(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, statusId);
-        testUtils.perform(request, TEST_USERNAME)
+        Long statusId = taskStatusRepository.findAll().get(0).getId() + 1;
+
+        var request = delete(BASE_URL + TASK_STATUS_CONTROLLER_PATH + ID, statusId);
+        utils.perform(request, TEST_USERNAME)
                 .andExpect(status().isNotFound());
+
         assertEquals(1, taskStatusRepository.count());
     }
-
 }

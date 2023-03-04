@@ -20,7 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +38,6 @@ public class Task {
     private Long id;
 
     @NotBlank(message = "Name should not be empty")
-    @Size(min = 1, message = "Name should be greater than 1")
     @Column(name = "name")
     private String name;
 

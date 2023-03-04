@@ -13,7 +13,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Service
 public class LabelServiceImpl implements LabelService {
-
     private final LabelRepository labelRepository;
 
     @Override

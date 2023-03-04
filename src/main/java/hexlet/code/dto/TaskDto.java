@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -18,7 +17,6 @@ import java.util.List;
 @Builder
 public class TaskDto {
     @NotBlank(message = "Name should not be empty")
-    @Size(min = 1, message = "Name should be greater than 1")
     private String name;
 
     private String description;

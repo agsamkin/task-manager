@@ -37,12 +37,10 @@ public class User {
     private Long id;
 
     @NotBlank(message = "First name should not be empty")
-    @Size(min = 1, message = "First name should be greater than 1")
     @Column(name = "firstName")
     private String firstName;
 
     @NotBlank(message = "Last name should not be empty")
-    @Size(min = 1, message = "Last name should be greater than 1")
     @Column(name = "lastName")
     private String lastName;
 

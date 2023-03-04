@@ -24,7 +24,6 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 @Service
 public class TaskServiceImpl implements TaskService {
-
     private final TaskRepository taskRepository;
     private final TaskStatusService taskStatusService;
     private final UserService userService;

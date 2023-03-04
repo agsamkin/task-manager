@@ -2,7 +2,6 @@ package hexlet.code.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.config.SpringConfigForIT;
-import hexlet.code.dto.LabelDto;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.utils.TestUtils;
@@ -20,6 +19,7 @@ import java.util.List;
 import static hexlet.code.controller.LabelController.ID;
 import static hexlet.code.controller.LabelController.LABEL_CONTROLLER_PATH;
 import static hexlet.code.utils.TestUtils.BASE_URL;
+import static hexlet.code.utils.TestUtils.TEST_LABEL_2;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,126 +40,138 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = SpringConfigForIT.class)
 class LabelControllerTest {
     @Autowired
-    private TestUtils testUtils;
+    private TestUtils utils;
 
     @Autowired
     private LabelRepository labelRepository;
 
     @BeforeEach
-    void clear() {
-        testUtils.clear();
+    public void clear() {
+        utils.clear();
     }
 
     @Test
-    void getLabelById() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME);
-        final var expectedLabel = labelRepository.findAll().get(0);
+    public void getLabelById() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME);
 
-        final var request = get(BASE_URL + LABEL_CONTROLLER_PATH + ID,
+        Label expectedLabel = labelRepository.findAll().get(0);
+
+        var request = get(BASE_URL + LABEL_CONTROLLER_PATH + ID,
                 expectedLabel.getId());
-        final var response =
-                testUtils.perform(request, TEST_USERNAME)
+        var response =
+                utils.perform(request, TEST_USERNAME)
                         .andExpect(status().isOk()).andReturn().getResponse();
 
-        final Label label = TestUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
+        Label actualLabel = TestUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
-        assertEquals(expectedLabel.getId(), label.getId());
-        assertEquals(expectedLabel.getName(), label.getName());
+        assertEquals(expectedLabel.getId(), actualLabel.getId());
+        assertEquals(expectedLabel.getName(), actualLabel.getName());
     }
 
     @Test
-    void getAllLabels() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME);
+    public void getAllLabels() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME);
 
-        final var request = get(BASE_URL + LABEL_CONTROLLER_PATH);
-        final var response =
-                testUtils.perform(request, TEST_USERNAME)
+        var request = get(BASE_URL + LABEL_CONTROLLER_PATH);
+        var response =
+                utils.perform(request, TEST_USERNAME)
                         .andExpect(status().isOk()).andReturn().getResponse();
 
         List<Label> labels = TestUtils.fromJson(response.getContentAsString(), new TypeReference<>() {
         });
+
         assertEquals(1, labels.size());
     }
 
     @Test
-    void getLabelByIdFails() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME);
-        final Label expectedLabel = labelRepository.findAll().get(0);
+    public void getLabelByIdFails() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME);
+
+        Label expectedLabel = labelRepository.findAll().get(0);
         Exception exception = assertThrows(
-                Exception.class, () -> testUtils.perform(get(BASE_URL + LABEL_CONTROLLER_PATH + ID,
+                Exception.class, () -> utils.perform(get(
+                        BASE_URL + LABEL_CONTROLLER_PATH + ID,
                         expectedLabel.getId()))
         );
+
         String message = exception.getMessage();
+
         assertTrue(message.contains("No value present"));
     }
 
 
     @Test
-    void createLabel() throws Exception {
+    public void createLabel() throws Exception {
         assertEquals(0, labelRepository.count());
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME).andExpect(status().isCreated());
+
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME).andExpect(status().isCreated());
+
         assertEquals(1, labelRepository.count());
     }
 
     @Test
-    void createLabelTwiceFails() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME).andExpect(status().isCreated());
-        testUtils.regDefaultLabel(TEST_USERNAME).andExpect(status().isUnprocessableEntity());
+    public void createLabelTwiceFails() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME).andExpect(status().isCreated());
+        utils.regDefaultLabel(TEST_USERNAME).andExpect(status().isUnprocessableEntity());
+
         assertEquals(1, labelRepository.count());
     }
 
     @Test
-    void updateLabel() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME);
+    public void updateLabel() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME);
 
-        final Label label = labelRepository.findAll().get(0);
+        Label label = labelRepository.findAll().get(0);
 
-        final var request = put(BASE_URL + LABEL_CONTROLLER_PATH + ID,
+        var request = put(
+                BASE_URL + LABEL_CONTROLLER_PATH + ID,
                 label.getId());
 
-        LabelDto labelDto = LabelDto.builder()
-                .name("new label").build();
-
-        final var updateRequest = request
-                .content(TestUtils.asJson(labelDto))
+        var updateRequest = request
+                .content(TestUtils.asJson(TEST_LABEL_2))
                 .contentType(APPLICATION_JSON);
 
-        testUtils.perform(updateRequest, TEST_USERNAME);
+        utils.perform(updateRequest, TEST_USERNAME);
 
         assertTrue(labelRepository.existsById(label.getId()));
-        assertNotNull(labelRepository.findByName(labelDto.getName()).orElse(null));
+        assertNotNull(labelRepository.findByName(TEST_LABEL_2.getName()).orElse(null));
         assertNull(labelRepository.findByName(label.getName()).orElse(null));
     }
 
     @Test
-    void deleteLabel() throws Exception {
+    public void deleteLabel() throws Exception {
         assertEquals(0, labelRepository.count());
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME);
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME);
 
-        final Long labelId = labelRepository.findAll().get(0).getId();
-        final var request = delete(BASE_URL + LABEL_CONTROLLER_PATH + ID, labelId);
-        testUtils.perform(request, TEST_USERNAME)
-                .andExpect(status().isOk());
+        Long labelId = labelRepository.findAll().get(0).getId();
+
+        var request = delete(
+                BASE_URL + LABEL_CONTROLLER_PATH + ID, labelId);
+        utils.perform(request, TEST_USERNAME).andExpect(status().isOk());
+
         assertEquals(0, labelRepository.count());
     }
 
     @Test
-    void deleteLabelFails() throws Exception {
-        testUtils.regDefaultUser();
-        testUtils.regDefaultLabel(TEST_USERNAME);
-        final Long labelId = labelRepository.findAll().get(0).getId() + 1;
-        final var request = delete(BASE_URL + LABEL_CONTROLLER_PATH + ID, labelId);
-        testUtils.perform(request, TEST_USERNAME)
+    public void deleteLabelFails() throws Exception {
+        utils.regDefaultUser();
+        utils.regDefaultLabel(TEST_USERNAME);
+
+        Long labelId = labelRepository.findAll().get(0).getId() + 1;
+
+        var request = delete(
+                BASE_URL + LABEL_CONTROLLER_PATH + ID, labelId);
+        utils.perform(request, TEST_USERNAME)
                 .andExpect(status().isNotFound());
+
         assertEquals(1, labelRepository.count());
     }
-
 }

@@ -2,7 +2,7 @@ FROM gradle:7.6-jdk17
 
 WORKDIR /app
 
-COPY /app .
+COPY ./
 
 RUN gradle installDist
 

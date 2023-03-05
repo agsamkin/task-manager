@@ -6,4 +6,6 @@ COPY ./ .
 
 RUN gradle installDist
 
+RUN gradle assembleFrontend
+
 CMD ./build/install/app/bin/app

@@ -50,6 +50,8 @@ dependencies {
     // Позволяет сгенерировать и проматривать интерактивную документацию по API
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
+    implementation 'com.rollbar:rollbar-spring-boot-webmvc:1.8.1'
+
     compileOnly 'org.projectlombok:lombok'
 
     runtimeOnly 'com.h2database:h2'

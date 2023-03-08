@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +61,7 @@ public class LabelController {
     @ApiResponse(responseCode = "201", description = "Label has been created")
     @ResponseStatus(CREATED)
     @PostMapping
-    public Label create(@RequestBody @Valid LabelDto labelDto, BindingResult bindingResult) {
+    public Label create(@RequestBody @Valid LabelDto labelDto) {
         return labelService.createLabel(labelDto);
     }
 
@@ -74,7 +73,7 @@ public class LabelController {
     })
     @PutMapping(ID)
     public Label update(@PathVariable("id") long id,
-                       @RequestBody @Valid LabelDto labelDto, BindingResult bindingResult) {
+                       @RequestBody @Valid LabelDto labelDto) {
         return labelService.updateLabel(id, labelDto);
     }
 

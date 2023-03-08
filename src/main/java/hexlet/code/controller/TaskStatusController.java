@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,7 +60,7 @@ public class TaskStatusController {
     @ApiResponse(responseCode = "201", description = "Task status has been created")
     @ResponseStatus(CREATED)
     @PostMapping
-    public TaskStatus create(@RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
+    public TaskStatus create(@RequestBody @Valid TaskStatusDto taskStatusDto) {
         return taskStatusService.createTaskStatus(taskStatusDto);
     }
 
@@ -72,7 +72,7 @@ public class TaskStatusController {
     })
     @PutMapping(ID)
     public TaskStatus update(@PathVariable("id") long id,
-                              @RequestBody @Valid TaskStatusDto taskStatusDto, BindingResult bindingResult) {
+                              @RequestBody @Valid TaskStatusDto taskStatusDto) {
         return taskStatusService.updateTaskStatus(id, taskStatusDto);
     }
 

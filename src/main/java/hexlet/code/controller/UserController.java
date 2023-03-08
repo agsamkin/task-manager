@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +62,7 @@ public class UserController {
     @ApiResponse(responseCode = "201", description = "User has been created")
     @ResponseStatus(CREATED)
     @PostMapping
-    public User create(@RequestBody @Valid UserDto userDto, BindingResult bindingResult) {
+    public User create(@RequestBody @Valid UserDto userDto) {
         return userService.createUser(userDto);
     }
 
@@ -75,7 +75,7 @@ public class UserController {
     @PutMapping(ID)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public User update(@PathVariable("id") long id,
-                              @RequestBody @Valid UserDto userDto, BindingResult bindingResult) {
+                              @RequestBody @Valid UserDto userDto) {
         return userService.updateUser(id, userDto);
     }
 

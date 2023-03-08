@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,7 +71,7 @@ public class TaskController {
     @ApiResponse(responseCode = "201", description = "Task has been created")
     @ResponseStatus(CREATED)
     @PostMapping
-    public Task create(@RequestBody @Valid TaskDto taskDto, BindingResult bindingResult) {
+    public Task create(@RequestBody @Valid TaskDto taskDto) {
         return taskService.createTask(taskDto);
     }
 
@@ -85,7 +84,7 @@ public class TaskController {
     @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping(ID)
     public Task update(@PathVariable("id") long id,
-                             @RequestBody @Valid TaskDto taskDto, BindingResult bindingResult) {
+                             @RequestBody @Valid TaskDto taskDto) {
         return taskService.updateTask(id, taskDto);
     }
 

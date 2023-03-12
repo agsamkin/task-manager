@@ -1,11 +1,13 @@
 package hexlet.code.service.impl;
 
 import hexlet.code.dto.UserDto;
+
+import hexlet.code.exception.custom.UserNotFoundException;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,12 +23,7 @@ import static hexlet.code.config.security.WebSecurityConfig.DEFAULT_AUTHORITIES;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-
-    private UserDto convertToUserDto(User user) {
-        return modelMapper.map(user, UserDto.class);
-    }
 
     @Override
     public List<User> getAll() {
@@ -36,7 +33,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUserById(long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
@@ -59,20 +56,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     u.setPassword(passwordEncoder.encode(userDto.getPassword()));
                     return userRepository.save(u);
                 })
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
     public void deleteUser(long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         userRepository.delete(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

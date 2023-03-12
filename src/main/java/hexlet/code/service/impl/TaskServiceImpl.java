@@ -2,6 +2,8 @@ package hexlet.code.service.impl;
 
 import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
+import hexlet.code.exception.custom.TaskNotFoundException;
+import hexlet.code.exception.custom.UserNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -16,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -45,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task getTaskById(long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
     }
 
     @Override
@@ -54,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
         if (Objects.nonNull(taskDto.getExecutorId())) {
             executor = userRepository
                     .findById(taskDto.getExecutorId())
-                    .orElseThrow(() -> new NoSuchElementException("Executor not found"));
+                    .orElseThrow(() -> new UserNotFoundException("Executor not found"));
         }
 
         List<Label> labels = null;
@@ -84,7 +85,7 @@ public class TaskServiceImpl implements TaskService {
         if (Objects.nonNull(taskDto.getExecutorId())) {
             User executor = userRepository
                     .findById(taskDto.getExecutorId())
-                    .orElseThrow(() -> new NoSuchElementException("Executor not found"));
+                    .orElseThrow(() -> new UserNotFoundException("Executor not found"));
             task.setExecutor(executor);
         }
 

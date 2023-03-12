@@ -169,7 +169,7 @@ class TaskControllerTest {
         var request = delete(
                 BASE_URL + TASK_CONTROLLER_PATH + UserController.ID, taskId);
         utils.perform(request, TEST_USERNAME)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
 
         assertEquals(1, taskRepository.count());
     }

@@ -81,7 +81,6 @@ public class TaskController {
             @ApiResponse(responseCode = "201", description = "Task has been updated"),
             @ApiResponse(responseCode = "404", description = "Task with this id wasn`t found")
     })
-    @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping(ID)
     public Task update(@PathVariable("id") long id,
                              @RequestBody @Valid TaskDto taskDto) {

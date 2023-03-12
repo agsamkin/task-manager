@@ -1,6 +1,7 @@
 package hexlet.code.service.impl;
 
 import hexlet.code.dto.LabelDto;
+import hexlet.code.exception.custom.LabelNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.service.LabelService;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +23,7 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public Label getLabelById(long id) {
         return labelRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Label not found"));
+                .orElseThrow(() -> new LabelNotFoundException("Label not found"));
     }
 
     @Override

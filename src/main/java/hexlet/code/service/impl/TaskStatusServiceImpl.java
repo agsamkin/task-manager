@@ -1,6 +1,7 @@
 package hexlet.code.service.impl;
 
 import hexlet.code.dto.TaskStatusDto;
+import hexlet.code.exception.custom.TaskStatusNotFoundException;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.service.TaskStatusService;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +23,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     public TaskStatus getTaskStatusById(long id) {
         return taskStatusRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Task status not found"));
+                .orElseThrow(() -> new TaskStatusNotFoundException("Task status not found"));
     }
 
     @Override
@@ -40,13 +40,13 @@ public class TaskStatusServiceImpl implements TaskStatusService {
                     ts.setName(taskStatusDto.getName());
                     return taskStatusRepository.save(ts);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Task status not found"));
+                .orElseThrow(() -> new TaskStatusNotFoundException("Task status not found"));
     }
 
     @Override
     public void deleteTaskStatus(long id) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Task status not found"));
+                .orElseThrow(() -> new TaskStatusNotFoundException("Task status not found"));
         taskStatusRepository.delete(taskStatus);
     }
 }

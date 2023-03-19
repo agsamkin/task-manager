@@ -1,9 +1,7 @@
 ## Task manager
 
 ### About:
-Demo [app](https://task-manager-fkw4.onrender.com/) for task management
-
-See API docs [is here](https://task-manager-fkw4.onrender.com/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config)
+Demo app for task management
 
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/agsamkin/java-project-73/workflows/hexlet-check/badge.svg)](https://github.com/agsamkin/java-project-73/actions)

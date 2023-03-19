@@ -92,7 +92,7 @@ public class BaseExceptionHandler {
 
     private ErrorResponse getErrorResponseAndSendToRollbar(String message) {
         ErrorResponse errorResponse = new ErrorResponse(message);
-        rollbar.error(errorResponse.toString());
+//        rollbar.error(errorResponse.toString());
         return errorResponse;
     }
 }
